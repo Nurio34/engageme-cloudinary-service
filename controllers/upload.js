@@ -1,5 +1,8 @@
 import cloudinary from "../cloudinary.js";
 import { unlinkSync } from "fs";
+import { deleteMediasOnError } from "./delete.js";
+
+const successUploads = [];
 
 const uploadMedia = async (fileObj) => {
   const { file, cloudinarySize, originalSize, ratio, scale, size, position } =
@@ -29,13 +32,16 @@ const uploadMedia = async (fileObj) => {
           y: scale === 1 ? (position.y * -1 * paramY).toFixed() : undefined,
         },
       ],
-      eager_async: true, // Process asynchronously
+      eager_async: true,
     });
-
+    successUploads.push({
+      publicId: response.public_id,
+      type: response.resource_type,
+    });
     return response;
   } catch (error) {
-    console.error(error);
-    throw error; // Propagate the error so it can be caught in Promise.all()
+    console.error(`uploadMedia() error : ${error} `);
+    throw error;
   }
 };
 
@@ -64,6 +70,7 @@ export const uploadMedias = async (req, res) => {
     const uploadPromises = filesArray.map((fileObj) => uploadMedia(fileObj));
 
     const results = await Promise.all(uploadPromises);
+
     const medias = results.map((result) => ({
       asset_id: result.asset_id,
       public_id: result.public_id,
@@ -79,11 +86,15 @@ export const uploadMedias = async (req, res) => {
       audio: result.audio,
     }));
 
-    files.forEach((file) => unlinkSync(file.path));
-
+    files.forEach((file) => {
+      unlinkSync(file.path);
+    });
+    successUploads.length = 0;
     return res.status(200).json({ status: "success", medias });
   } catch (error) {
     console.error("Upload Failed:", error);
+    deleteMediasOnError(successUploads);
+    successUploads.length = 0;
     return res.status(500).json({
       status: "error",
     });
