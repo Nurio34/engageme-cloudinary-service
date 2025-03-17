@@ -6,7 +6,7 @@ import { ping } from "./controllers/ping.js";
 
 const router = Router();
 
-router.post("/uploadMedias", multerUpload.array("files", 10), uploadMedias);
+router.post("/uploadMedias", multerUpload.array("files", 100), uploadMedias);
 router.post("/deleteMedias", deleteMedias);
 router.get("/ping", ping);
 

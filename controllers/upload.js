@@ -31,9 +31,10 @@ const uploadMedia = async (fileObj) => {
       ],
       eager_async: true, // Process asynchronously
     });
+
     return response;
   } catch (error) {
-    console.error("Cloudinary upload error:", error);
+    console.error(error);
     throw error; // Propagate the error so it can be caught in Promise.all()
   }
 };
@@ -60,7 +61,6 @@ export const uploadMedias = async (req, res) => {
         filesArray[index][key] = JSON.parse(item);
       });
     });
-
     const uploadPromises = filesArray.map((fileObj) => uploadMedia(fileObj));
 
     const results = await Promise.all(uploadPromises);
@@ -86,8 +86,6 @@ export const uploadMedias = async (req, res) => {
     console.error("Upload Failed:", error);
     return res.status(500).json({
       status: "error",
-      message: "Upload failed",
-      error: error.message,
     });
   }
 };
