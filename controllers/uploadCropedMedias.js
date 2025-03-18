@@ -45,7 +45,7 @@ const uploadMedia = async (fileObj) => {
   }
 };
 
-export const uploadMedias = async (req, res) => {
+export const uploadCropedMedias = async (req, res) => {
   try {
     const files = req.files;
     if (!files || files.length === 0) {

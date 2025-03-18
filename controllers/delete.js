@@ -1,6 +1,6 @@
 import cloudinary from "../cloudinary.js";
 
-const deleteFile = async (publicId, type) => {
+const deleteMedia = async (publicId, type) => {
   try {
     await cloudinary.uploader.destroy(publicId, {
       resource_type: type,
@@ -17,7 +17,7 @@ export const deleteMedias = async (req, res) => {
 
   try {
     const deleteResults = await Promise.all(
-      publicIds.map(({ publicId, type }) => deleteFile(publicId, type))
+      publicIds.map(({ publicId, type }) => deleteMedia(publicId, type))
     );
     const responses = deleteResults.some((result) => result === "error")
       ? "error"
