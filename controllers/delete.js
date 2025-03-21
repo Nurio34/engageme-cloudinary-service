@@ -29,18 +29,30 @@ export const deleteMedias = async (req, res) => {
   }
 };
 
-export const deleteMediasOnError = async (publicIds) => {
+export const deleteMediasOnError = async (publicIds, retries = 3) => {
+  if (retries <= 0) {
+    console.error("Max retry attempts reached. Failed to delete media.");
+    return;
+  }
+
   try {
     const deleteResults = await Promise.all(
       publicIds.map(({ publicId, type }) => deleteFile(publicId, type))
     );
-    const responses = deleteResults.some((result) => result === "error")
-      ? "error"
-      : "success";
 
-    if (responses === "error") deleteMediasOnError(publicIds);
+    const hasError = deleteResults.some((result) => result === "error");
+
+    if (hasError) {
+      console.warn(
+        `Retrying deleteMediasOnError... Remaining attempts: ${retries - 1}`
+      );
+      await deleteMediasOnError(publicIds, retries - 1);
+    }
   } catch (error) {
-    console.log(error);
-    deleteMediasOnError(publicIds);
+    console.error("Error deleting media:", error);
+    console.warn(
+      `Retrying deleteMediasOnError... Remaining attempts: ${retries - 1}`
+    );
+    await deleteMediasOnError(publicIds, retries - 1);
   }
 };
