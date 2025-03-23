@@ -8,6 +8,7 @@ export const uploadPosterImage = async (req, res) => {
     clearTimeout(timeout);
     const media = await cloudinary.uploader.upload(file.path, {
       resource_type: "image",
+      folder: "/Engage-Me",
     });
 
     unlinkSync(file.path);

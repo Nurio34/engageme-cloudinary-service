@@ -3,7 +3,7 @@ import { uploadCropedMedias } from "./controllers/uploadCropedMedias.js";
 import { multerUpload } from "./multer.js";
 import { deleteMedias } from "./controllers/delete.js";
 import { ping } from "./controllers/ping.js";
-import { uploadPosterImage } from "./controllers/uploadSingleImage.js";
+import { uploadPosterImage } from "./controllers/uploadPosterImage.js";
 import { deletePosterImage } from "./controllers/deletePosterImage.js";
 
 const router = Router();
@@ -19,7 +19,7 @@ router.post(
   multerUpload.single("file"),
   uploadPosterImage
 );
-router.delete("/deletePosterImage/:publicId", deletePosterImage);
+router.delete("/deletePosterImage/:folder/:id", deletePosterImage);
 router.get("/ping", ping);
 
 export default router;
