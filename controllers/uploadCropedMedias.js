@@ -1,5 +1,5 @@
 import cloudinary from "../cloudinary.js";
-import { unlinkSync } from "fs";
+import { promises as fs } from "fs";
 import { deleteMediasOnError } from "./delete.js";
 
 const successUploads = [];
@@ -86,9 +86,8 @@ export const uploadCropedMedias = async (req, res) => {
       audio: result.audio,
     }));
 
-    files.forEach((file) => {
-      unlinkSync(file.path);
-    });
+    await Promise.all(files.map((file) => fs.unlink(file.path)));
+
     successUploads.length = 0;
     return res.status(200).json({ status: "success", medias });
   } catch (error) {

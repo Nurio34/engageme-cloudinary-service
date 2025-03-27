@@ -5,6 +5,7 @@ import { deleteMedias } from "./controllers/delete.js";
 import { ping } from "./controllers/ping.js";
 import { uploadPosterImage } from "./controllers/uploadPosterImage.js";
 import { deletePosterImage } from "./controllers/deletePosterImage.js";
+import { uploadEditedMedia } from "./controllers/uploadEditedMedia.js";
 
 const router = Router();
 
@@ -20,6 +21,11 @@ router.post(
   uploadPosterImage
 );
 router.delete("/deletePosterImage/:folder/:id", deletePosterImage);
+router.post(
+  "/uploadEditedMedia",
+  multerUpload.single("file"),
+  uploadEditedMedia
+);
 router.get("/ping", ping);
 
 export default router;

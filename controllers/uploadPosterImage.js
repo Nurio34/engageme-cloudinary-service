@@ -15,7 +15,7 @@ export const uploadPosterImage = async (req, res) => {
 
     return res.status(200).json({
       status: "success",
-      media: { url: media.url, publicId: media.public_id },
+      media: { url: media.secure_url, publicId: media.public_id },
     });
   } catch (error) {
     console.log(error);
