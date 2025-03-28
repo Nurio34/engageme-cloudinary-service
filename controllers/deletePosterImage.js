@@ -3,7 +3,6 @@ import cloudinary from "../cloudinary.js";
 export const deletePosterImage = async (req, res) => {
   const { folder, id } = req.params;
   const publicId = folder + "/" + id;
-  console.log(publicId);
 
   try {
     await cloudinary.uploader.destroy(publicId, {
