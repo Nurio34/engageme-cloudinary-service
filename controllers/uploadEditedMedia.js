@@ -23,14 +23,14 @@ export const uploadEditedMedia = async (req, res) => {
       return res.status(404).json({ status: "error" });
     }
 
-    const { public_id, secure_url } = media;
+    const { public_id, secure_url, width, height } = media;
 
     // Unlink the file after a successful upload
     await fs.unlink(file.path);
 
     return res.status(200).json({
       status: "success",
-      media: { publicId: public_id, url: secure_url },
+      media: { publicId: public_id, url: secure_url, width, height },
     });
   } catch (error) {
     console.error("Upload Failed:", error);
