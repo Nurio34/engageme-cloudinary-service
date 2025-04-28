@@ -22,21 +22,15 @@ export const initializeSocket = (server) => {
   io.on("connection", (socket) => {
     console.log("User connected: ", socket.id);
 
-    // Store socket IDs in a global map
     socket.on("addUser", (userId) => {
-      console.log({ userId });
-
       global.onlineUsers.set(userId, socket.id);
+
       console.log(`User ${userId} added with socket ID: ${socket.id}`);
     });
 
-    // When a message is received, check the receiver's socket ID and emit the message
     socket.on("postLikeNotification", (data) => {
-      console.log(data);
-
       const { postOwnerId, postLikeNotification } = data;
 
-      // Look up the socket ID of the post owner
       const postOwnerSocketId = global.onlineUsers.get(postOwnerId);
 
       if (postOwnerSocketId) {
@@ -50,7 +44,6 @@ export const initializeSocket = (server) => {
     });
 
     socket.on("disconnect", () => {
-      // Clean up when the user disconnects
       global.onlineUsers?.forEach((socketId, userId) => {
         if (socketId === socket.id) {
           global.onlineUsers.delete(userId);
