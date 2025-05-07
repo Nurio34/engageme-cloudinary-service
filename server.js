@@ -4,15 +4,14 @@ import cors from "cors";
 import Route from "./route.js";
 import multer from "multer";
 import { createServer } from "http";
-import { initializeSocket } from "./socket.js"; // <-- import the socket initializer
+import { initializeSocket } from "./socket/index.js";
 
 config();
 const PORT = process.env.PORT;
 
 const app = express();
-const server = createServer(app); // <-- create raw HTTP server
+const server = createServer(app);
 
-// Middlewares
 app.use(
   cors({
     origin: process.env.ORIGIN_URL,
@@ -29,7 +28,6 @@ app.use(express.urlencoded({ extended: true, limit: "200mb" }));
 
 app.use(Route);
 
-// Multer error handler
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     return res.status(400).json({ error: "File too large" });
@@ -37,10 +35,8 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-// Initialize Socket.io with the HTTP server
 initializeSocket(server);
 
-// Start server
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
