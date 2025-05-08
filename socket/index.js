@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { socketControllers } from "./controllers.js";
+import { socketControllers } from "./controllers/index.js";
 
 let io;
 global.onlineUsers = new Map();

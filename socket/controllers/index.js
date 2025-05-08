@@ -1,4 +1,4 @@
-import { postNotifications } from "./controllers/postNotifications.js";
+import { postNotifications } from "./postNotifications.js";
 
 export const socketControllers = (io) => {
   io.on("connection", (socket) => {
